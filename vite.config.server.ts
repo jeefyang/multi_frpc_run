@@ -6,14 +6,14 @@ import path from 'node:path';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-    
 
+
+    // 创建本地环境
     (['./.env.local', `./.env.${mode}.local`]).forEach(k => {
         if (!fs.existsSync(k)) {
             fs.writeFileSync(k, '');
         }
     });
-
 
     //@ts-expect-error
     const env: NodeJS.ProcessEnv = loadEnv(mode, process.cwd(), ''); // 加载所有环境变量
