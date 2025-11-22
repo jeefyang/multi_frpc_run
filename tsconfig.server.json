@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+        "lib": [
+            "esnext",
+            "dom"
+        ],
+        "target": "esnext",
+        "module": "esnext",
+        "esModuleInterop": true,
+        "strict": true,
+        "moduleResolution": "node",
+        "noEmit": true,
+        "baseUrl": "./",
+    },
+    "include": [
+        "env.d.ts",
+        "server/**/*.ts",
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}
