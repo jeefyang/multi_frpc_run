@@ -15,6 +15,13 @@ export default defineConfig(({ mode }) => {
         }
     });
 
+    // 创建资源文件夹
+    (['./res']).forEach(d => {
+        if (!fs.existsSync(d)) {
+            fs.mkdirSync(d, { recursive: true });
+        }
+    });
+
     //@ts-expect-error
     const env: NodeJS.ProcessEnv = loadEnv(mode, process.cwd(), ''); // 加载所有环境变量
 

@@ -10,6 +10,10 @@ type env = {
     VITE_VUE_DIR: string;
     /** 端口 */
     VITE_PORT: string;
+    /** 初始用户 */
+    VITE_INIT_USER: string;
+    /** 初始密码 */
+    VITE_INIT_PASSWORD: string;
 };
 
 declare namespace NodeJS {

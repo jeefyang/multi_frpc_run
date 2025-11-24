@@ -2,8 +2,18 @@ import path from "path";
 import fs from "fs";
 import express from "express";
 import cors from "cors";
+import { ApiInit } from "./apisInit";
 
 export class Main {
+
+    /** 资源目录 */
+    readonly resDir: string = './res';
+    /** 配置 */
+    config: Partial<ConfigType> = {};
+    /** frp 版本列表文件夹 */
+    readonly frpVerListDir: string = path.join(this.resDir, 'frpVerList');
+    /** frpc客户端文件夹 */
+    readonly frpcListDir: string = path.join(this.resDir, 'frpcList');
 
 
     readonly app = express();
@@ -11,9 +21,46 @@ export class Main {
     constructor() {
     }
 
+    /** 初始化 */
     async init() {
+        this.initConfig();
         this.setPlugin();
         this.setVue();
+        ApiInit.bind(this)();
+    }
+
+    /** 初始化配置文件 */
+    async initConfig() {
+
+        // 初始化文件夹
+        [this.frpVerListDir, this.frpcListDir].forEach(dir => {
+            if (!fs.existsSync(dir)) {
+                fs.mkdirSync(dir, { recursive: true });
+            }
+        });
+
+
+        const f = path.join(this.resDir, 'config.json');
+
+        if (!fs.existsSync(f)) {
+            this.config.user = process.env.VITE_INIT_USER;
+            this.config.password = process.env.VITE_INIT_PASSWORD;
+            this.updateConfig();
+        }
+        else {
+            const str = fs.readFileSync(f, "utf-8");
+            const j: ConfigType = JSON.parse(str);
+            for (let k in j) {
+                //@ts-expect-error
+                this.config[k] = j[k];
+            }
+        }
+    }
+
+    /** 更新配置文件 */
+    updateConfig() {
+        const f = path.join(this.resDir, 'config.json');
+        fs.writeFileSync(f, JSON.stringify(this.config), "utf-8");
     }
 
     /**
@@ -22,7 +69,6 @@ export class Main {
     setPlugin() {
         this.app.use(cors());
         this.app.use(express.json());
-
     }
 
 
@@ -55,6 +101,8 @@ export class Main {
             });
         }
     }
+
+
 
 
 
