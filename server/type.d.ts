@@ -1,7 +1,7 @@
 type ConfigType = {
     user: string;
     password: string;
-    token: string;
+    tokenList: string[];
 };
 
 type GithubFrpRelasesReturnType = {

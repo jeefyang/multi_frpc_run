@@ -1,8 +1,14 @@
 <script setup lang="ts">
 import { darkTheme, useMessage } from "naive-ui";
-import { Add12Filled } from "@vicons/fluent";
-import { MdRefresh } from "@vicons/ionicons4";
+import Top from "./components/Top.vue";
+import Login from "./components/Login.vue";
+import EditUser from "./components/EditUser.vue";
+import Content from "./components/Content.vue";
+import Loading from "./components/Loading.vue";
+
 import { onMounted } from "vue";
+const topHeight = "30px";
+const contentHeight = `calc(100vh - ${topHeight} - 20px)`;
 
 onMounted(() => {
     // const message = useMessage();
@@ -18,25 +24,16 @@ onMounted(() => {
         <NMessageProvider placement="top">
             <!-- 通用通知 -->
             <NNotificationProvider placement="bottom-right">
-                <n-flex style="gap: 0;">
-                    <div style="flex: 1">
-                        <n-button style="width: 100%">123</n-button>
-                    </div>
-                     <n-button>
-                            <n-icon size="15">
-                                <Add12Filled></Add12Filled>
-                            </n-icon>
-                        </n-button>
-                           <n-button>
-                            <n-icon size="15">
-                                <MdRefresh></MdRefresh>
-                            </n-icon>
-                        </n-button>
-                </n-flex>
-
-                <!-- <n-dropdown trigger="hover" placement="bottom-start">
-                    <n-button> 找个地方休息 </n-button>
-                </n-dropdown> -->
+                <!-- 顶部 -->
+                <Top :height="topHeight"></Top>
+                <!-- 内容页 -->
+                <Content :height="contentHeight"></Content>
+                <!-- 登录 -->
+                <Login></Login>
+                <!-- 修改用户信息 -->
+                <EditUser></EditUser>
+                <!-- 刷新 -->
+                <Loading></Loading>
             </NNotificationProvider>
         </NMessageProvider>
     </n-config-provider>

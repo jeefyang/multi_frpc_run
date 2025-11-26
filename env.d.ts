@@ -14,6 +14,8 @@ type env = {
     VITE_INIT_USER: string;
     /** 初始密码 */
     VITE_INIT_PASSWORD: string;
+    /** token 最大数量,相当于用户端同时在线数量 */
+    VITE_TOKEN_MAX: string;
 };
 
 declare namespace NodeJS {

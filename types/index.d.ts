@@ -6,10 +6,16 @@ type JFetchResult = {
 };
 
 type FrpVerType = {
+    /** 文件名 */
+    name: string;
+    /** 平台 */
     platform: string;
-    ver: string;
+    /** 版本 */
+    version: string;
+    /** 下载地址 */
     downLoadUrl: string;
-    isDownload?: boolean;
+    /** 是否已经下载 */
+    isDownloaded?: boolean;
 };
 
 type FrpVerListType = { [x in string]: FrpVerType[] };
@@ -23,8 +29,30 @@ type FrpcConfigType = {
     desc: string;
     /** 备注 */
     remark: string;
+    /** 平台 */
+    platform: string;
+    /** 版本 */
+    version: string;
     /** 唯一识别码,也是用来识别目录 */
-    uuid: string;
+    uuid?: string;
 };
 
-type FrpcListType = FrpcConfigType[];
+// type FrpcListType = FrpcConfigType[];
+
+
+type LoginType = {
+    user: string;
+    password: string;
+};
+
+type EditUserType = {
+    oldUser: string;
+    oldPassword: string;
+    user?: string;
+    password?: string;
+    confirmPassword?: string;
+};
+
+type verifyUserType = {
+    token?: string;
+};
