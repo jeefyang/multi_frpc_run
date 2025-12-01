@@ -5,7 +5,7 @@ type JFetchResult = {
     err?: any;
 };
 
-type FrpVerType = {
+type ClientVerType = {
     /** 文件名 */
     name: string;
     /** 平台 */
@@ -18,9 +18,9 @@ type FrpVerType = {
     isDownloaded?: boolean;
 };
 
-type FrpVerListType = { [x in string]: FrpVerType[] };
+type ClientVerListType = { [x in string]: ClientVerType[] };
 
-type FrpcConfigType = {
+type ClientConfigType = {
     /** 域名 */
     domain: string,
     /** 名称 */
@@ -36,6 +36,10 @@ type FrpcConfigType = {
     /** 唯一识别码,也是用来识别目录 */
     uuid?: string;
 };
+
+type FrpcTomlType={
+    
+}
 
 // type FrpcListType = FrpcConfigType[];
 

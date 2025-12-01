@@ -13,6 +13,6 @@ export const jhttp = {
     /** 修改用户信息 */
     editUser: (data: EditUserType) => jfetch("POST", "/edit/user", data),
     /** 添加frpc客户端 */
-    addClient: (data: FrpcConfigType) => jfetch("POST", "/add/client", data)
+    addClient: (data: ClientConfigType) => jfetch("POST", "/add/client", data)
 
 };

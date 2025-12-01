@@ -22,9 +22,14 @@ export class Main {
     /** frp版本列表历史记录文件 */
     readonly frpVerListHistoryJsonName: string = path.join(this.resDir, 'frpVerListHistory.json');
     /** 客户端列表缓存 */
-    protected _frpcConfigListCache: FrpcConfigType[] | undefined = undefined;
+    protected _frpcConfigListCache: ClientConfigType[] | undefined = undefined;
     /** frp版本列表缓存 */
-    protected _frpVerListCache: FrpVerListType | undefined = undefined;
+    protected _frpVerListCache: ClientVerListType | undefined = undefined;
+    prefixProcessList: {
+        [key: string]: {
+            isVerify?: boolean;
+        };
+    } = {};
 
     readonly app = express();
 
@@ -87,14 +92,14 @@ export class Main {
                 continue;
             }
             const str = fs.readFileSync(p, 'utf-8');
-            const json: FrpcConfigType = JSON.parse(str);
+            const json: ClientConfigType = JSON.parse(str);
             this._frpcConfigListCache.push(json);
         }
         return this._frpcConfigListCache;
     }
 
     /**  更新frpc客户端配置列表数据 */
-    updateFrpcConfigListData(data: FrpcConfigType[]) {
+    updateFrpcConfigListData(data: ClientConfigType[]) {
         this._frpcConfigListCache = data;
     }
 
@@ -128,7 +133,7 @@ export class Main {
                     const dir = path.basename(path.dirname(url));
                     const ver = dir.split("v")[1];
                     const platform = name.split(`frp_${ver}_`)[1].split('.tar.gz')[0];
-                    const o: FrpVerType = {
+                    const o: ClientVerType = {
                         name,
                         downLoadUrl: url,
                         platform,
@@ -151,7 +156,7 @@ export class Main {
     }
 
     /** 更新frp版本列表数据 */
-    updateFrpVerListData(data: FrpVerListType) {
+    updateFrpVerListData(data: ClientVerListType) {
         this._frpVerListCache = data;
         fs.writeFileSync(this.frpVerListHistoryJsonName, JSON.stringify(this._frpVerListCache), 'utf-8');
     }
@@ -326,46 +331,56 @@ export class Main {
     }
 
 
-    async myGet(o: { isVerify?: boolean; }, ...args: Parameters<typeof this.app.get>) {
+    // @ts-ignore
+    readonly appGet: typeof this.app.get = (...args: Parameters<typeof this.app.get>) => {
+
         try {
-            this.app.get(args[0], async (req, res, next) => {
-                const { token } = req.headers;
-                if (o.isVerify) {
-                    if (!this._verifyToken(res, token as string)) {
-                        return;
+            const item = this.prefixProcessList[args[0] as string];
+            if (item) {
+                this.app.get(args[0], async (req, res, next) => {
+                    const { token } = req.headers;
+                    if (item.isVerify) {
+                        if (!this._verifyToken(res, token as string)) {
+                            return;
+                        }
                     }
-                }
-                next();
-            });
+                    next();
+                });
+            }
             return this.app.get(...args);
         }
         catch (e) {
             console.log(`get请求捕捉到错误:${args[0]}`);
             console.error(e);
         }
-    }
 
-    async myPost(o: { isVerify?: boolean; }, ...args: Parameters<typeof this.app.post>) {
+
+    };
+
+
+
+    // @ts-ignore
+    readonly appPost: typeof this.app.post = (...args: Parameters<typeof this.app.post>) => {
         try {
-            this.app.post(args[0], async (req, res, next) => {
-                const { token } = req.headers;
-                if (o.isVerify) {
-                    if (!this._verifyToken(res, token as string)) {
-                        return;
+            const item = this.prefixProcessList[args[0] as string];
+            if (item) {
+                this.app.post(args[0], async (req, res, next) => {
+                    const { token } = req.headers;
+                    if (item.isVerify) {
+                        if (!this._verifyToken(res, token as string)) {
+                            return;
+                        }
                     }
-                }
-                next();
-            });
+                    next();
+                });
+            }
             return this.app.post(...args);
         }
         catch (e) {
             console.log(`post请求捕捉到错误:${args[0]}`);
             console.error(e);
         }
-    }
-
-
-
+    };
 
 
 

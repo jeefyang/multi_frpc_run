@@ -1,7 +1,7 @@
 <template>
     <n-flex vertical style="height: 100%">
         <div>{{ tabStatus }}</div>
-        <div>{{ dataStore.curFrpc.name }}</div>
+        <div>{{ dataStore.curClient.name }}</div>
     </n-flex>
 </template>
 <script setup lang="ts">
@@ -34,9 +34,9 @@ onDeactivated(() => {
 
 onActivated(() => {
     isActive.value = true;
-    if (oldClientUuid.value !== dataStore.curFrpc.uuid) {
+    if (oldClientUuid.value !== dataStore.curClient.uuid) {
         refreshFn();
-        oldClientUuid.value = dataStore.curFrpc.uuid!;
+        oldClientUuid.value = dataStore.curClient.uuid!;
     }
 });
 

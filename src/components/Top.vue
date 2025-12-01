@@ -2,7 +2,7 @@
     <div :style="{ height: props.height }">
         <n-flex style="gap: 0" class="max-height">
             <div style="flex: 1">
-                <n-button class="max-height" style="width: 100%" @click="dataStore.showClientList = true">{{ dataStore?.curFrpc?.name || "无" }}</n-button>
+                <n-button class="max-height" style="width: 100%" @click="dataStore.showClientList = true">{{ dataStore?.curClient?.name || "无" }}</n-button>
             </div>
             <!-- 添加 -->
             <n-button @click="addFn" class="max-height">
@@ -21,18 +21,18 @@
 
     <n-modal title="客户端列表" v-model:show="dataStore.showClientList" preset="dialog" :mask-closable="true">
         <!-- 列表 -->
-        <n-flex v-if="dataStore.frpcList.length > 0" style="max-height: 60vh; overflow: auto">
-            <n-tooltip trigger="hover" v-for="(item, index) in dataStore.frpcList" :key="item.uuid">
+        <n-flex v-if="dataStore.clientList.length > 0" style="max-height: 60vh; overflow: auto">
+            <n-tooltip trigger="hover" v-for="(item, index) in dataStore.clientList" :key="item.uuid">
                 <template #trigger>
                     <n-card
                         :title="item.name"
                         @click="toClient(item)"
                         size="small"
                         :style="{
-                            color: item.uuid === dataStore.curFrpc.uuid ? themeVars.primaryColor : undefined,
-                            'border-color': item.uuid === dataStore.curFrpc.uuid ? themeVars.primaryColor : undefined
+                            color: item.uuid === dataStore.curClient.uuid ? themeVars.primaryColor : undefined,
+                            'border-color': item.uuid === dataStore.curClient.uuid ? themeVars.primaryColor : undefined
                         }"
-                        :header-style="{ '--n-title-text-color': item.uuid === dataStore.curFrpc.uuid ? themeVars.primaryColor : undefined }"
+                        :header-style="{ '--n-title-text-color': item.uuid === dataStore.curClient.uuid ? themeVars.primaryColor : undefined }"
                     >
                         <n-flex vertical>
                             <div>
@@ -59,7 +59,7 @@ import { MdRefresh } from "@vicons/ionicons4";
 import { useDataStore } from "../stores/data";
 import pinia from "../stores";
 import { jhttp } from "../apis";
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { useThemeVars } from "naive-ui";
 
 const themeVars = useThemeVars();
@@ -84,8 +84,8 @@ const refreshFn = async () => {
     dataStore.loading = false;
 };
 
-const toClient = (item: FrpcConfigType) => {
-    dataStore.curFrpc = item;
+const toClient = (item: ClientConfigType) => {
+    dataStore.curClient = item;
     dataStore.contentStatus = "curClient";
     dataStore.showClientList = false;
     dataStore.refreshCount++;
@@ -97,9 +97,16 @@ const getFrpcList = async () => {
     }
     const res = await jhttp.getFrpcList();
     if (res.code == 200) {
-        dataStore.frpcList = res.data;
+        dataStore.clientList = res.data;
     }
 };
+
+watch(
+    () => dataStore.refreshCount,
+    async () => {
+        refreshFn();
+    }
+);
 
 onMounted(() => {
     getFrpcList();

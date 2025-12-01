@@ -34,7 +34,7 @@ import { jhttp } from "@/apis";
 const dataStore = useDataStore(pinia);
 
 const formRef = ref<FormInst | null>(null);
-const model = reactive<Partial<FrpcConfigType>>({});
+const model = reactive<Partial<ClientConfigType>>({});
 
 const message = useMessage();
 
@@ -47,7 +47,7 @@ const sumbit = async () => {
     await formRef.value!.validate();
     dataStore.loadingMsg = "添加中,如果涉及下载,可能会很久,请耐心等待...";
     dataStore.loading = true;
-    const res = await jhttp.addClient({ ...(model as Required<FrpcConfigType>) });
+    const res = await jhttp.addClient({ ...(model as Required<ClientConfigType>) });
     dataStore.loading = false;
     if (res.code != 200) {
         message.error(res.msg || "添加失败");
@@ -58,12 +58,12 @@ const sumbit = async () => {
 const getFrpVerList = async () => {
     const res = await jhttp.getFrpVerList();
     if (res.code == 200) {
-        dataStore.frpVerList = res.data;
+        dataStore.clientVerList = res.data;
     }
-    if (dataStore.frpVerList) {
-        for (let p in dataStore.frpVerList) {
+    if (dataStore.clientVerList) {
+        for (let p in dataStore.clientVerList) {
             platformList.value.push({
-                label: `${p} (已下载${dataStore.frpVerList[p]!.filter((item) => item.isDownloaded).length}/${dataStore.frpVerList[p]!.length})`,
+                label: `${p} (已下载${dataStore.clientVerList[p]!.filter((item) => item.isDownloaded).length}/${dataStore.clientVerList[p]!.length})`,
                 value: p
             });
         }
@@ -72,7 +72,7 @@ const getFrpVerList = async () => {
 
 const selectPlatform = (value: string) => {
     model.version = "";
-    const list = dataStore.frpVerList[value];
+    const list = dataStore.clientVerList[value];
     if (!list) {
         verList.value = [];
         return;

@@ -16,11 +16,12 @@ export const useDataStore = defineStore('data', () => {
     /** 客户端按键金刚 */
     const clientTabStatus = ref(<"main" | "list" | "config">"main");
     /** frp版本列表 */
-    const frpVerList = ref(<FrpVerListType>{});
+    const clientVerList = ref(<ClientVerListType>{});
     /** frpc客户端列表 */
-    const frpcList = ref(<FrpcConfigType[]>[]);
+    const clientList = ref(<ClientConfigType[]>[]);
     /** 当前frpc客户端 */
-    const curFrpc = ref(<FrpcConfigType>{});
+    const curClient = ref(<ClientConfigType>{});
+    // const curFrpcToml=ref(<>)
     /** 刷新计时器 */
     const refreshCount = ref(0);
     /** 是否正在刷新 */
@@ -45,7 +46,7 @@ export const useDataStore = defineStore('data', () => {
     /** 判断frp版本列表是否为空 */
     const checkFrpVerList = () => {
         let count = 0;
-        for (let p in frpVerList.value) {
+        for (let p in clientVerList.value) {
             count++;
         }
         return !!count;
@@ -61,9 +62,9 @@ export const useDataStore = defineStore('data', () => {
         getToken,
         showLogin,
         showEditUser,
-        frpVerList,
-        frpcList,
-        curFrpc,
+        clientVerList,
+        clientList,
+        curClient,
         contentStatus,
         showClientList,
         checkFrpVerList,

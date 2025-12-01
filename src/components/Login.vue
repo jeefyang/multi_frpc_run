@@ -53,6 +53,7 @@ const submit = async () => {
     dataStore.showLogin = false;
     model.user = "";
     model.password = "";
+    dataStore.refreshCount++;
 };
 
 onMounted(() => {

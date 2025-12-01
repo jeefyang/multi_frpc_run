@@ -13,8 +13,11 @@ export function ApiInit(this: Main) {
 
 
     // 获取frp版本列表
-    this.myGet({ isVerify: true }, apiUrl + "/get/frp/ver/list", async (req, res) => {
-      
+    this.prefixProcessList[apiUrl + "/get/frp/ver/list"] = {
+        isVerify: true
+    };
+    this.appGet(apiUrl + "/get/frp/ver/list", async (req, res) => {
+
         const { forceUpdate } = req.query;
         const data = await this.getFrpVerListData(forceUpdate);
         res.status(200).json({
@@ -24,11 +27,12 @@ export function ApiInit(this: Main) {
         } as JFetchResult);
     });
 
+    this.prefixProcessList[apiUrl + "/get/frpc/list"] = {
+        isVerify: true
+    };
     // 获取frpc客户端列表
-    this.app.get(apiUrl + "/get/frpc/list", async (req, res) => {
-        if (!checkToken(req, res)) {
-            return;
-        }
+    this.appGet(apiUrl + "/get/frpc/list", async (req, res) => {
+
         const data = this.getFrpcConfigListData();
         res.status(200).json({
             code: 200,
@@ -37,8 +41,9 @@ export function ApiInit(this: Main) {
         } as JFetchResult);
     });
 
+
     // 登录
-    this.app.post(apiUrl + "/login", async (req, res) => {
+    this.appPost(apiUrl + "/login", async (req, res) => {
         const { user, password } = req.body as LoginType;
         if (this.config.user != user || this.config.password != password) {
             res.status(401).json({
@@ -67,7 +72,7 @@ export function ApiInit(this: Main) {
     });
 
     // 验证用户
-    this.app.post(apiUrl + "/verify/user", async (req, res) => {
+    this.appPost(apiUrl + "/verify/user", async (req, res) => {
         const { token } = req.body as verifyUserType;
         if (!this.config.tokenList) {
             this.config.tokenList = [];
@@ -81,9 +86,9 @@ export function ApiInit(this: Main) {
         }
     });
 
+
     // 修改用户信息
-    this.app.post(apiUrl + "/edit/user", async (req, res) => {
-        if (!checkToken(req, res)) { return; }
+    this.appPost(apiUrl + "/edit/user", async (req, res) => {
         const { user, password, oldUser, oldPassword } = req.body as EditUserType;
         if (this.config.user != oldUser || this.config.password != oldPassword) {
             res.status(500).json({
@@ -112,9 +117,12 @@ export function ApiInit(this: Main) {
         } as JFetchResult);
     });
 
+    this.prefixProcessList[apiUrl + "/add/client"] = {
+        isVerify: true
+    };
     // 添加frpc客户端
-    this.app.post(apiUrl + "/add/client", async (req, res) => {
-        const body = req.body as FrpcConfigType;
+    this.appPost(apiUrl + "/add/client", async (req, res) => {
+        const body = req.body as ClientConfigType;
         if (!body.name || !body.domain || !body.platform || !body.version) {
             return res.status(200).json({
                 code: 500,
@@ -172,7 +180,7 @@ export function ApiInit(this: Main) {
             console.log(`进度：[${"*".repeat(p / 2)}${"-".repeat(50 - p / 2)}] ${p}%`);
         });
         console.log(`解压完成 ${item.name}`);
-        const config: FrpcConfigType = {
+        const config: ClientConfigType = {
             ...body, uuid: uuid
         };
         const list = this.getFrpcConfigListData();
